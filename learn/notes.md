@@ -36,6 +36,7 @@ Functions to learn
 	2. Resource Starvation
 3. [Pthread playlist](https://www.youtube.com/watch?v=uA8X5zNOGw8&list=PL9IEJIKnBJjFZxuqyJ9JqVYmuFZHr7CFM)
 4. [Threads Codevault](https://www.youtube.com/watch?v=d9s_d28yJq0&list=PLfqABt5AS4FmuQf70psXrsMLEDQXNkLq2)
+5. [Dining Philosophers with threading and mutex](https://pages.mtu.edu/~shene/NSF-3/e-Book/MUTEX/TM-example-philos-1.html)
 
 ### Threads
 #### Threads & Forks
