@@ -6,7 +6,7 @@
 #    By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/16 13:18:28 by jkhong            #+#    #+#              #
-#    Updated: 2021/08/16 18:14:18 by jkhong           ###   ########.fr        #
+#    Updated: 2021/08/16 18:52:28 by jkhong           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ clean_libft:
 			make clean -C ./libft
 
 $(NAME): 	libft $(OBJS)
-			$(CC) $(CFLAGS) -pthread -o $(NAME) $(OBJS) $(LIB)
+			$(CC) $(CFLAGS) -g -pthread -o $(NAME) $(OBJS) $(LIB)
 
 clean:		clean_libft
 			rm -f $(OBJS)
