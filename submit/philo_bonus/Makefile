@@ -6,7 +6,7 @@
 #    By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/16 13:18:28 by jkhong            #+#    #+#              #
-#    Updated: 2021/08/16 13:20:33 by jkhong           ###   ########.fr        #
+#    Updated: 2021/08/16 18:13:24 by jkhong           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ OBJS		=	${SRCS:.c=.o}
 HEADER		=	-I ./includes -I ./libft/includes
 LIB			=	-L ./libft	-l ft
 CC			=	gcc
-CFLAGS		=	-Wall -Wextra -Werror
+# CFLAGS		=	-Wall -Wextra -Werror
 NAME		=	philo_bonus
 
 %.o: %.c
@@ -30,7 +30,7 @@ clean_libft:
 			make clean -C ./libft
 
 $(NAME): 	libft $(OBJS)
-			$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIB)
+			$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIB) -pthread
 
 clean:		clean_libft
 			rm -f $(OBJS)
