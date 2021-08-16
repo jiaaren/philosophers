@@ -6,14 +6,15 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/16 19:05:39 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/16 23:56:54 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libphilo.h"
 
-static bool			g_simulate = true;
-pthread_mutex_t		*g_forks;
+static bool				g_simulate = true;
+static pthread_mutex_t	*g_forks;
+static t_globals		g_args;
 
 void	*test_thread(void *arg)
 {
@@ -39,6 +40,41 @@ void	*test_thread(void *arg)
 	- sleep
 */
 
+void	*initialise_philo(int p_num, t_philo **philo)
+{
+	t_philo	*tmp;
+	int i;
+
+	tmp = malloc(sizeof(t_philo) * p_num);
+	i = 0;
+	while (i < p_num)
+	{
+		tmp[i].philo_num = i + 1;
+		tmp[i].times_eaten = 0;
+		if (i != p_num - 1)
+		{
+			tmp[i].fork_one = i;
+			tmp[i].fork_two = tmp[i].fork_one + 1;
+		}
+		else
+		{
+			tmp[i].fork_one = 0;
+			tmp[i].fork_two = p_num - 1;
+		}
+		printf("Phili num %i: has fork one as %i and for two as %i\n", tmp[i].philo_num, tmp[i].fork_one, tmp[i].fork_two);
+		i++;
+	}
+	*philo = tmp;
+}
+
+void	initialise_globals(void)
+{
+	g_args.philo_amount = 0;
+	g_args.time_to_die = 0;
+	g_args.time_to_eat = 0;
+	g_args.time_to_sleep = 0;
+	g_args.times_philo_eat = 0;
+}
 
 /*
 	Initialise forks(mutexes, and forks)
@@ -47,10 +83,10 @@ void	*test_thread(void *arg)
 		2. initialise pthread_create
 		3. then only initialise pthread_join
 */
-void	initialise_phil_forks(int p_num, pthread_t **philo, pthread_mutex_t **forks)
+void	initialise_phil_forks(int p_num, pthread_t **thread, pthread_mutex_t **forks)
 {
 	int				i;
-	pthread_t		*tmp_philo;
+	pthread_t		*tmp_thread;
 	pthread_mutex_t	*tmp_forks;
 
 	i = 0;
@@ -58,17 +94,17 @@ void	initialise_phil_forks(int p_num, pthread_t **philo, pthread_mutex_t **forks
 	while (i < p_num)
 		pthread_mutex_init(&(tmp_forks[i++]), NULL);
 	i = 0;
-	tmp_philo = malloc(sizeof(pthread_t) * p_num);
+	tmp_thread = malloc(sizeof(pthread_t) * p_num);
 	while (i < p_num)
-		pthread_create(&(tmp_philo[i++]), NULL, test_thread, NULL);
+		pthread_create(&(tmp_thread[i++]), NULL, test_thread, NULL);
 	i = 0;
 	while (i < p_num)
-		pthread_join(tmp_philo[i++], NULL);
-	*philo = tmp_philo;
+		pthread_join(tmp_thread[i++], NULL);
+	*thread = tmp_thread;
 	*forks = tmp_forks;
 }
 
-void	free_threads(int p_num, pthread_t *philo, pthread_mutex_t *forks)
+void	free_threads(int p_num, pthread_t *thread, pthread_mutex_t *forks, t_philo *philo)
 {
 	int	i;
 
@@ -76,6 +112,7 @@ void	free_threads(int p_num, pthread_t *philo, pthread_mutex_t *forks)
 	while (i < p_num)
 		pthread_mutex_destroy(&(forks[i++]));
 	free(forks);
+	free(thread);
 	free(philo);
 }
 
@@ -84,11 +121,13 @@ int	main(void)
 	// constants to be replaced by argv
 	int	num = 5;
 	
-	pthread_t	*philo;
+	pthread_t	*thread;
+	t_philo		*philo;
 
-	initialise_phil_forks(num, &philo, &g_forks);
+	initialise_philo(num, &philo);
+	initialise_phil_forks(num, &thread, &g_forks);
 	while (g_simulate)
 		;
-	free_threads(num, philo, g_forks);
+	free_threads(num, thread, g_forks, philo);
 	return (0);
 }
