@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/17 10:19:23 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/17 10:32:40 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@ static bool				g_simulate = false;
 static pthread_mutex_t	*g_forks;
 static t_globals		g_args;
 
-__uint64_t givetime()
+unsigned long givetime()
 {
 	struct timeval _timeval;
 
 	gettimeofday(&_timeval, NULL);
-	return(_timeval.tv_sec * (__uint64_t)1000 + (_timeval.tv_usec / 1000));
+	return(_timeval.tv_sec * (unsigned long)1000 + (_timeval.tv_usec / 1000));
 }
 
 void	*test_thread(void *arg)
@@ -37,6 +37,7 @@ void	*test_thread(void *arg)
 		sleep(1);
 	}
 	g_simulate = false;
+	return (NULL);
 }
 
 /*
@@ -68,11 +69,12 @@ void	*test_thread2(void *arg)
 		sleep(1);
 	}
 	g_simulate = false;
+	return (NULL);
 }
 
 
 
-void	*initialise_philo(int p_num, t_philo **philo)
+void	initialise_philo(int p_num, t_philo **philo)
 {
 	t_philo	*tmp;
 	int i;
