@@ -6,13 +6,13 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/17 10:16:18 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/17 10:19:23 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libphilo.h"
 
-static bool				g_simulate = true;
+static bool				g_simulate = false;
 static pthread_mutex_t	*g_forks;
 static t_globals		g_args;
 
@@ -54,8 +54,8 @@ void	*test_thread2(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)(arg);
-	// while (!g_simulate)
-	// 	;
+	while (!g_simulate)
+		;
 	philo->last_eat_time = givetime();
 	i = 0;
 	while (g_simulate)
