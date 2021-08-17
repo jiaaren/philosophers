@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/17 13:54:22 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/17 17:44:39 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,21 +65,23 @@ void	*death_thread(void *arg)
 {
 	const t_philo *philo = (t_philo *)(arg);
 
-	while (givetime() <= (philo->last_eat_time + g_args.time_to_die))
-		;
-	printf("%lu %i died\n", givetime(), philo->philo_num);
-	putfork((t_philo *)philo);
-	g_simulate = false;
+	usleep(g_args.time_to_die * 1000);
+	if (givetime() > (philo->last_eat_time + g_args.time_to_die))
+	{
+		printf("%lu %i died\n", givetime(), philo->philo_num);
+		putfork((t_philo *)philo);
+		g_simulate = false;
+	}
 }
 
 void	eat(t_philo *philo)
 {
-	printf("%lu %i is eating\n", givetime(), philo->philo_num);	
 	philo->last_eat_time = givetime();
+	pthread_detach(philo->check_death);
 	pthread_create(&philo->check_death, NULL, death_thread, (void *)philo);
+	printf("%lu %i is eating\n", philo->last_eat_time, philo->philo_num);	
 	usleep(g_args.time_to_eat * 1000);
 	putfork(philo);
-	pthread_detach(philo->check_death);
 }
 
 void	philo_sleep(t_philo *philo)
@@ -141,15 +143,6 @@ void	initialise_philo(int p_num, t_philo **philo)
 	*philo = tmp;
 }
 
-void	initialise_globals(void)
-{
-	g_args.philo_amount = 5;
-	g_args.time_to_die = 200;
-	g_args.time_to_eat = 100;
-	g_args.time_to_sleep = 50;
-	g_args.times_philo_eat = 0;
-}
-
 /*
 	Initialise forks(mutexes, and forks)
 	- ordering seems important?
@@ -194,6 +187,16 @@ void	free_threads(int p_num, pthread_t *thread, pthread_mutex_t *forks, t_philo 
 	free(philo);
 }
 
+void	initialise_globals(void)
+{
+	g_args.philo_amount = 2;
+	g_args.time_to_die = 120;
+	g_args.time_to_eat = 100;
+	g_args.time_to_sleep = 50;
+	g_args.times_philo_eat = 0;
+}
+
+
 int	main(void)
 {
 	// constants to be replaced by argv
@@ -201,10 +204,10 @@ int	main(void)
 	t_philo		*philo;
 
 	initialise_globals();
-	initialise_philo(5, &philo);
-	initialise_phil_forks(5, &thread, &g_forks, philo);
+	initialise_philo(g_args.philo_amount, &philo);
+	initialise_phil_forks(g_args.philo_amount, &thread, &g_forks, philo);
 	while (g_simulate)
 		;
-	free_threads(5, thread, g_forks, philo);
+	free_threads(g_args.philo_amount, thread, g_forks, philo);
 	return (0);
 }
