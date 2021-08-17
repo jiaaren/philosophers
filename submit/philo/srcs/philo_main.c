@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/17 17:44:39 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/17 20:04:15 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ void	*death_thread(void *arg)
 	if (givetime() > (philo->last_eat_time + g_args.time_to_die))
 	{
 		printf("%lu %i died\n", givetime(), philo->philo_num);
-		putfork((t_philo *)philo);
 		g_simulate = false;
 	}
 }
@@ -77,8 +76,8 @@ void	*death_thread(void *arg)
 void	eat(t_philo *philo)
 {
 	philo->last_eat_time = givetime();
-	pthread_detach(philo->check_death);
 	pthread_create(&philo->check_death, NULL, death_thread, (void *)philo);
+	pthread_detach(philo->check_death);
 	printf("%lu %i is eating\n", philo->last_eat_time, philo->philo_num);	
 	usleep(g_args.time_to_eat * 1000);
 	putfork(philo);
@@ -97,15 +96,14 @@ void	think(t_philo *philo)
 
 void	*test_thread2(void *arg)
 {
-	int			i;
 	t_philo		*philo;
 
 	philo = (t_philo *)(arg);
 	while (!g_simulate)
 		;
 	philo->last_eat_time = givetime();
-	i = 0;
 	pthread_create(&philo->check_death, NULL, death_thread, (void *)philo);
+	pthread_detach(philo->check_death);
 	while (g_simulate)
 	{
 		think(philo);
@@ -164,11 +162,14 @@ void	initialise_phil_forks(int p_num, pthread_t **thread, pthread_mutex_t **fork
 	i = 0;
 	tmp_thread = malloc(sizeof(pthread_t) * p_num);
 	while (i < p_num)
-		pthread_create(&(tmp_thread[i++]), NULL, test_thread2, (void *)&(philo[i]));
+	{
+		pthread_create(&(tmp_thread[i]), NULL, test_thread2, (void *)&(philo[i]));
+		i++;
+	}
 	g_simulate = true;
-	// i = 0;
-	// while (i < p_num)
-	// 	pthread_join(tmp_thread[i++], NULL);
+	i = 0;
+	while (i < p_num)
+		pthread_detach(tmp_thread[i++]);
 	*thread = tmp_thread;
 }
 
@@ -176,9 +177,9 @@ void	free_threads(int p_num, pthread_t *thread, pthread_mutex_t *forks, t_philo 
 {
 	int	i;
 
-	i = 0;
-	while (i < p_num)
-		pthread_detach(thread[i++]);
+	// i = 0;
+	// while (i < p_num)
+	// 	pthread_detach(philo[i++].check_death);
 	i = 0;
 	while (i < p_num)
 		pthread_mutex_destroy(&(forks[i++]));
@@ -189,9 +190,9 @@ void	free_threads(int p_num, pthread_t *thread, pthread_mutex_t *forks, t_philo 
 
 void	initialise_globals(void)
 {
-	g_args.philo_amount = 2;
-	g_args.time_to_die = 120;
-	g_args.time_to_eat = 100;
+	g_args.philo_amount = 5;
+	g_args.time_to_die = 100;
+	g_args.time_to_eat = 50;
 	g_args.time_to_sleep = 50;
 	g_args.times_philo_eat = 0;
 }
@@ -206,8 +207,11 @@ int	main(void)
 	initialise_globals();
 	initialise_philo(g_args.philo_amount, &philo);
 	initialise_phil_forks(g_args.philo_amount, &thread, &g_forks, philo);
+	while (!g_simulate)
+		;
 	while (g_simulate)
 		;
+	usleep(1000000);
 	free_threads(g_args.philo_amount, thread, g_forks, philo);
 	return (0);
 }
