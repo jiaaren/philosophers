@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:51:50 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/17 13:38:40 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/17 22:11:16 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef struct  s_globals {
     int time_to_eat;
     int time_to_sleep;
     int times_philo_eat;
+    int threads_ended;
 }               t_globals;
 
 typedef struct  s_philo {
