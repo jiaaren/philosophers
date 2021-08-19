@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_utils.c                                      :+:      :+:    :+:   */
+/*   philo_utils_initialise.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/19 19:57:57 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/19 20:28:48 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/19 20:58:03 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,38 @@ void	initialise_mutex(int p_num, pthread_mutex_t **forks)
 	*forks = tmp_forks;
 }
 
-void	free_threads(int p_num, pthread_t *thread,
-		pthread_mutex_t *forks, t_philo *philo)
+void	create_thread(int p_num, pthread_t **thread,
+			t_philo *philo, void *(f)(void *))
+{
+	int				i;
+	pthread_t		*th;
+
+	th = malloc(sizeof(pthread_t) * p_num);
+	i = 0;
+	while (i < p_num)
+	{
+		pthread_create(&(th[i]), NULL, f, (void *)(&(philo[i])));
+		i++;
+	}
+	*thread = th;	
+}
+
+void	join_and_free_th(int p_num, pthread_t *th_cycle, pthread_t *th_death)
+{
+	int i;
+
+	i = 0;
+	while (i < p_num)
+	{
+		pthread_join(th_cycle[i], NULL);
+		pthread_join(th_death[i], NULL);
+		i++;
+	}
+	free(th_cycle);
+	free(th_death);
+}
+
+void	free_mutex_fork_philo(int p_num, pthread_mutex_t *forks, t_philo *philo)
 {
 	int	i;
 
@@ -60,6 +90,5 @@ void	free_threads(int p_num, pthread_t *thread,
 	while (i < p_num)
 		pthread_mutex_destroy(&(forks[i++]));
 	free(forks);
-	free(thread);
 	free(philo);
 }
