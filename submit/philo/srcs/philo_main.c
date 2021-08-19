@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/19 21:20:57 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/19 22:21:01 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,13 +97,25 @@ void	*philo_cycle(void *arg)
 		2. initialise pthread_create
 		3. then only initialise pthread_join
 */
-int	main(void)
+int	main(int argc, char *argv[])
 {
 	pthread_t	*th_cycle;
 	pthread_t	*th_death;
 	t_philo		*philo;
 
-	initialise_globals(&g_args);
+	if (argc != 5 && argc != 6)
+	{
+		printf("./philo [number_of_philosophers] [time_to_die] [time_to_eat] ");
+		printf(" [time_to_sleep] ");
+		printf(" [OPTIONAL: number_of_times_each_philosopher_must_eat]\n");
+		printf("Times are expressed in milliseconds (1 second = 1000 ms).\n");
+		return (1);
+	}
+	if (initialise_globals(argc - 1, &(argv[1]), &g_args) == false)
+	{
+		printf("Please ensure all arguments are more than zero (> 0).\n");
+		return (2);
+	}
 	initialise_philo(g_args.philo_amount, &philo);
 	initialise_mutex(g_args.philo_amount, &g_forks);
 	create_thread(g_args.philo_amount, &th_cycle, philo, philo_cycle);
