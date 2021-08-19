@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/19 19:57:57 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/19 20:58:03 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/19 21:21:31 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,12 @@ void	create_thread(int p_num, pthread_t **thread,
 		pthread_create(&(th[i]), NULL, f, (void *)(&(philo[i])));
 		i++;
 	}
-	*thread = th;	
+	*thread = th;
 }
 
 void	join_and_free_th(int p_num, pthread_t *th_cycle, pthread_t *th_death)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < p_num)

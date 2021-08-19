@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:51:50 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/19 20:54:06 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/19 21:20:18 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,13 @@ typedef struct  s_philo {
 
 void	initialise_philo(int p_num, t_philo **philo);
 void	initialise_mutex(int p_num, pthread_mutex_t **forks);
-void	free_threads(int p_num, pthread_t *thread,
-		pthread_mutex_t *forks, t_philo *philo);
 void	create_thread(int p_num, pthread_t **thread,
 			t_philo *philo, void *(f)(void *));
 void	join_and_free_th(int p_num, pthread_t *th_cycle, pthread_t *th_death);
 void	free_mutex_fork_philo(int p_num, pthread_mutex_t *forks, t_philo *philo);
 
+unsigned long	givetime(void);
+void	initialise_globals(t_globals *g_args);
+void	end_cycle(t_globals *g_args);
 
 # endif
