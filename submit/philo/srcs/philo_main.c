@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/19 22:23:33 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/20 00:13:51 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,9 @@ void	eat(t_philo *philo)
 	if (g_args.simulate)
 		printf("%lu %i is eating\n", philo->last_eat_time, philo->philo_num);
 	(philo->times_eaten)++;
-	if (philo->times_eaten == g_args.times_philo_eat)
+	if (philo->times_eaten >= g_args.times_philo_eat)
+		g_args.tummies_filled++;
+	if (g_args.tummies_filled >= g_args.philo_amount)
 	{
 		end_cycle(&g_args);
 		g_args.ate_enough = true;

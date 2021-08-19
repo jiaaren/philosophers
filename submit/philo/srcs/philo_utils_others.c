@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/19 21:00:04 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/19 22:06:48 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/20 00:20:11 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ int	ft_atoi(const char *str)
 // pass in &(argv[1]) for args
 bool	initialise_globals(int params, char *args[], t_globals	*g_args)
 {
-	static int	i = 0;
+	static int	i = -1;
 	int			num;
 
-	while (i < params)
+	while (++i < params)
 	{
 		num = ft_atoi(args[i]);
 		if (num <= 0)
@@ -72,12 +72,12 @@ bool	initialise_globals(int params, char *args[], t_globals	*g_args)
 			g_args->time_to_sleep = num;
 		else
 			g_args->times_philo_eat = num;
-		i++;
 	}
 	if (params == 4)
-		g_args->times_philo_eat = __UINT32_MAX__;
+		g_args->times_philo_eat = INT_MAX;
 	g_args->simulate = false;
 	g_args->ate_enough = false;
+	g_args->tummies_filled = 0;
 	return (true);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:51:50 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/19 22:17:55 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/20 00:16:21 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,12 @@
 # include <stdio.h>
 # include <stdbool.h>
 # include <sys/time.h>
+# include <limits.h>
 
 typedef struct s_globals {
 	bool	simulate;
 	bool	ate_enough;
+	int		tummies_filled;
 	int		philo_amount;
 	int		time_to_die;
 	int		time_to_eat;
