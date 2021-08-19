@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:51:50 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/17 22:11:16 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/19 19:57:38 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ typedef struct  s_philo {
     int times_eaten;
     int fork_one;
     int fork_two;
-    pthread_t check_death;
 }               t_philo;
 
 # endif

@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/19 19:38:09 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/19 20:02:01 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,20 @@ static bool				g_eaten_enough = false;
 static pthread_mutex_t	*g_forks;
 static t_globals		g_args;
 
-unsigned long givetime()
+unsigned long	givetime(void)
 {
-	struct timeval _timeval;
+	struct timeval	_timeval;
 
 	gettimeofday(&_timeval, NULL);
-	return((_timeval.tv_sec * (unsigned long)1000 + (_timeval.tv_usec / 1000)) % 1000000);
+	return ((_timeval.tv_sec * (unsigned long)1000
+			+ (_timeval.tv_usec / 1000)) % 1000000);
 }
 
 void	takefork(t_philo *philo, int fork)
 {
 	pthread_mutex_lock(&(g_forks[fork]));
 	if (g_simulate)
-		printf("%lu %i has taken a fork\n", givetime(), philo->philo_num);	
+		printf("%lu %i has taken a fork\n", givetime(), philo->philo_num);
 }
 
 void	putfork(t_philo *philo)
@@ -46,7 +47,7 @@ void	end_cycle(void)
 	g_args.time_to_sleep = 0;
 }
 
-void	*death_thread(void *arg)
+void	*death_th(void *arg)
 {
 	t_philo			*philo;
 	unsigned long	wait_time;
@@ -61,15 +62,15 @@ void	*death_thread(void *arg)
 		usleep(wait_time * 1000);
 		curr_time = givetime();
 		wait_time = (philo->last_eat_time + g_args.time_to_die) - curr_time;
-		if (curr_time > (philo->last_eat_time + g_args.time_to_die) || g_args.philo_amount == 1)
+		if (curr_time > (philo->last_eat_time + g_args.time_to_die)
+			|| g_args.philo_amount == 1)
 		{
 			if (g_simulate)
 				printf("%lu %i died\n", givetime(), philo->philo_num);
 			end_cycle();
 			putfork(philo);
 			break ;
-		}
-		
+		}	
 	}
 }
 
@@ -124,7 +125,7 @@ void	*philo_cycle(void *arg)
 void	initialise_philo(int p_num, t_philo **philo)
 {
 	t_philo	*tmp;
-	int i;
+	int		i;
 
 	tmp = malloc(sizeof(t_philo) * p_num);
 	i = 0;
@@ -155,46 +156,40 @@ void	initialise_philo(int p_num, t_philo **philo)
 		2. initialise pthread_create
 		3. then only initialise pthread_join
 */
-void	initialise_phil_forks(int p_num, pthread_t **thread, pthread_mutex_t **forks, t_philo *philo)
+void	initialise_phil_forks(int p_num, pthread_t **thread, t_philo *philo)
 {
 	int				i;
-	pthread_t		*tmp_thread;
-	pthread_mutex_t	*tmp_forks;
-	pthread_t		tmp_thread2[5];
+	pthread_t		*th;
 
 	i = 0;
-	tmp_forks = malloc(sizeof(pthread_mutex_t) * p_num);
+	g_forks = malloc(sizeof(pthread_mutex_t) * p_num);
 	while (i < p_num)
-		pthread_mutex_init(&(tmp_forks[i++]), NULL);
-	*forks = tmp_forks;
-	i = 0;
-	tmp_thread = malloc(sizeof(pthread_t) * p_num);
-	while (i < p_num)
+		pthread_mutex_init(&(g_forks[i++]), NULL);
+	i = -1;
+	th = malloc(sizeof(pthread_t) * (p_num * 2));
+	while (++i < p_num)
 	{
-		pthread_create(&(tmp_thread[i]), NULL, philo_cycle, (void *)(&(philo[i])));
-		pthread_create(&(philo[i].check_death), NULL, death_thread, (void *)(&(philo)[i]));
-		i++;
+		pthread_create(&(th[i]), NULL, philo_cycle, (void *)(&(philo[i])));
+		pthread_create(&(th[p_num + i]), NULL, death_th, (void *)(&(philo)[i]));
 	}
-	// these 2 had to be above
-	*thread = tmp_thread;
+	*thread = th;
 	g_simulate = true;
-	i = 0;
-	while (i < p_num)
+	i = -1;
+	while (++i < p_num)
 	{
-		pthread_join(tmp_thread[i], NULL);
-		pthread_join(philo[i].check_death, NULL);
-		i++;
+		pthread_join(th[i], NULL);
+		pthread_join(th[p_num + i], NULL);
 	}
 }
 
-void	free_threads(int p_num, pthread_t *thread, pthread_mutex_t *forks, t_philo *philo)
+void	free_threads(int p_num, pthread_t *thread, t_philo *philo)
 {
 	int	i;
 
 	i = 0;
 	while (i < p_num)
-		pthread_mutex_destroy(&(forks[i++]));
-	free(forks);
+		pthread_mutex_destroy(&(g_forks[i++]));
+	free(g_forks);
 	free(thread);
 	free(philo);
 }
@@ -210,13 +205,12 @@ void	initialise_globals(void)
 
 int	main(void)
 {
-	// constants to be replaced by argv
 	pthread_t	*thread;
 	t_philo		*philo;
 
 	initialise_globals();
 	initialise_philo(g_args.philo_amount, &philo);
-	initialise_phil_forks(g_args.philo_amount, &thread, &g_forks, philo);
-	free_threads(g_args.philo_amount, thread, g_forks, philo);
+	initialise_phil_forks(g_args.philo_amount, &thread, philo);
+	free_threads(g_args.philo_amount, thread, philo);
 	return (0);
 }
