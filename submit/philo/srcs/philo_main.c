@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/19 22:21:01 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/19 22:23:33 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	*death_th(void *arg)
 			break ;
 		}	
 	}
+	return (NULL);
 }
 
 void	eat(t_philo *philo)

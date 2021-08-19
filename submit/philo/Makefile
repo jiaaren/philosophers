@@ -6,7 +6,7 @@
 #    By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/16 13:18:28 by jkhong            #+#    #+#              #
-#    Updated: 2021/08/19 20:11:01 by jkhong           ###   ########.fr        #
+#    Updated: 2021/08/19 22:22:53 by jkhong           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ OBJS		=	${SRCS:.c=.o}
 HEADER		=	-I ./includes -I ./libft/includes
 LIB			=	-L ./libft	-l ft
 CC			=	gcc
-# CFLAGS		=	-Wall -Wextra -Werror
+CFLAGS		=	-Wall -Wextra -Werror
 NAME		=	philo
 
 %.o: %.c
