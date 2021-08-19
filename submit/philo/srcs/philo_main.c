@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/18 00:58:48 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/19 17:32:45 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ void	putfork(t_philo *philo)
 {
 	pthread_mutex_unlock(&(g_forks[philo->fork_one]));
 	pthread_mutex_unlock(&(g_forks[philo->fork_two]));	
+	// // if (g_simulate)
+	// 	printf("%lu %i puts down forks\n", givetime(), philo->philo_num);
 }
 
 void	end_cycle(void)
@@ -86,9 +88,11 @@ void	*death_thread(void *arg)
 
 void	eat(t_philo *philo)
 {
+	pthread_t tmp_thread;
+
 	philo->last_eat_time = givetime();
-	pthread_create(&philo->check_death, NULL, death_thread, (void *)philo);
-	pthread_detach(philo->check_death);
+	pthread_create(&tmp_thread, NULL, death_thread, (void *)philo);
+	pthread_detach(tmp_thread);
 	if (g_simulate)
 		printf("%lu %i is eating\n", philo->last_eat_time, philo->philo_num);
 	(philo->times_eaten)++;
@@ -109,19 +113,19 @@ void	think(t_philo *philo)
 	if (g_simulate)
 		printf("%lu %i is thinking\n", givetime(), philo->philo_num);
 	// to avoid double 'died'
-	usleep(1000);
 }
 
 void	*philo_cycle(void *arg)
 {
 	t_philo		*philo;
+	pthread_t	tmp_thread;
 
 	philo = (t_philo *)(arg);
 	while (!g_simulate)
 		;
 	philo->last_eat_time = givetime();
-	pthread_create(&philo->check_death, NULL, death_thread, (void *)philo);
-	pthread_detach(philo->check_death);
+	pthread_create(&tmp_thread, NULL, death_thread, (void *)philo);
+	pthread_detach(tmp_thread);
 	while (g_simulate)
 	{
 		think(philo);
@@ -131,7 +135,10 @@ void	*philo_cycle(void *arg)
 		putfork(philo);
 		philo_sleep(philo);
 	}
+	// how to avoid eating to stuck when 1 fork?
+	putfork(philo);
 	g_args.threads_ended++;
+	// ????
 	return (NULL);
 }
 
@@ -179,19 +186,16 @@ void	initialise_phil_forks(int p_num, pthread_t **thread, pthread_mutex_t **fork
 	while (i < p_num)
 		pthread_mutex_init(&(tmp_forks[i++]), NULL);
 	*forks = tmp_forks;
-	i = 0;
+	i = -1;
 	tmp_thread = malloc(sizeof(pthread_t) * p_num);
-	while (i < p_num)
-	{
+	while (++i < p_num)
 		pthread_create(&(tmp_thread[i]), NULL, philo_cycle, (void *)&(philo[i]));
-		i++;
-	}
 	// these 2 had to be above
 	*thread = tmp_thread;
 	g_simulate = true;
 	i = 0;
 	while (i < p_num)
-		pthread_detach(tmp_thread[i++]);
+		pthread_join(tmp_thread[i++], NULL);
 }
 
 void	free_threads(int p_num, pthread_t *thread, pthread_mutex_t *forks, t_philo *philo)
@@ -208,11 +212,11 @@ void	free_threads(int p_num, pthread_t *thread, pthread_mutex_t *forks, t_philo 
 
 void	initialise_globals(void)
 {
-	g_args.philo_amount = 7;
-	g_args.time_to_die = 150;
-	g_args.time_to_eat = 40;
-	g_args.time_to_sleep = 40;
-	g_args.times_philo_eat = 3;
+	g_args.philo_amount = 5;
+	g_args.time_to_die = 200;
+	g_args.time_to_eat = 75;
+	g_args.time_to_sleep = 75;
+	g_args.times_philo_eat = 2;
 }
 
 int	main(void)
@@ -224,11 +228,9 @@ int	main(void)
 	initialise_globals();
 	initialise_philo(g_args.philo_amount, &philo);
 	initialise_phil_forks(g_args.philo_amount, &thread, &g_forks, philo);
-	while (!g_simulate)
-		;
 	while (g_args.threads_ended != g_args.philo_amount);
 		;
-	usleep(5000);
+	usleep(500000);
 	free_threads(g_args.philo_amount, thread, g_forks, philo);
 	return (0);
 }
