@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/19 20:02:01 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/19 20:28:44 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@ static bool				g_simulate = false;
 static bool				g_eaten_enough = false;
 static pthread_mutex_t	*g_forks;
 static t_globals		g_args;
+
+void	free_threads(int p_num, pthread_t *thread,
+		pthread_mutex_t *forks, t_philo *philo);
 
 unsigned long	givetime(void)
 {
@@ -122,33 +125,6 @@ void	*philo_cycle(void *arg)
 	return (NULL);
 }
 
-void	initialise_philo(int p_num, t_philo **philo)
-{
-	t_philo	*tmp;
-	int		i;
-
-	tmp = malloc(sizeof(t_philo) * p_num);
-	i = 0;
-	while (i < p_num)
-	{
-		tmp[i].philo_num = i + 1;
-		tmp[i].times_eaten = 0;
-		tmp[i].last_eat_time = 0;
-		if (i != p_num - 1)
-		{
-			tmp[i].fork_one = i;
-			tmp[i].fork_two = tmp[i].fork_one + 1;
-		}
-		else
-		{
-			tmp[i].fork_one = 0;
-			tmp[i].fork_two = p_num - 1;
-		}
-		i++;
-	}
-	*philo = tmp;
-}
-
 /*
 	Initialise forks(mutexes, and forks)
 	- ordering seems important?
@@ -162,36 +138,22 @@ void	initialise_phil_forks(int p_num, pthread_t **thread, t_philo *philo)
 	pthread_t		*th;
 
 	i = 0;
-	g_forks = malloc(sizeof(pthread_mutex_t) * p_num);
-	while (i < p_num)
-		pthread_mutex_init(&(g_forks[i++]), NULL);
-	i = -1;
 	th = malloc(sizeof(pthread_t) * (p_num * 2));
-	while (++i < p_num)
+	while (i < p_num)
 	{
 		pthread_create(&(th[i]), NULL, philo_cycle, (void *)(&(philo[i])));
 		pthread_create(&(th[p_num + i]), NULL, death_th, (void *)(&(philo)[i]));
+		i++;
 	}
 	*thread = th;
 	g_simulate = true;
-	i = -1;
-	while (++i < p_num)
+	i = 0;
+	while (i < p_num)
 	{
 		pthread_join(th[i], NULL);
 		pthread_join(th[p_num + i], NULL);
+		i++;
 	}
-}
-
-void	free_threads(int p_num, pthread_t *thread, t_philo *philo)
-{
-	int	i;
-
-	i = 0;
-	while (i < p_num)
-		pthread_mutex_destroy(&(g_forks[i++]));
-	free(g_forks);
-	free(thread);
-	free(philo);
 }
 
 void	initialise_globals(void)
@@ -205,12 +167,13 @@ void	initialise_globals(void)
 
 int	main(void)
 {
-	pthread_t	*thread;
+	pthread_t	*th;
 	t_philo		*philo;
 
 	initialise_globals();
 	initialise_philo(g_args.philo_amount, &philo);
-	initialise_phil_forks(g_args.philo_amount, &thread, philo);
-	free_threads(g_args.philo_amount, thread, philo);
+	initialise_mutex(g_args.philo_amount, &g_forks);
+	initialise_phil_forks(g_args.philo_amount, &th, philo);
+	free_threads(g_args.philo_amount, th, g_forks, philo);
 	return (0);
 }
