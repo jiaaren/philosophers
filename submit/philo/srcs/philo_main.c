@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/20 00:13:51 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/20 00:38:37 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	putforks(t_philo *philo)
 	pthread_mutex_unlock(&(g_forks[philo->fork_two]));
 }
 
-void	*death_th(void *arg)
+void	*death_cycle(void *arg)
 {
 	t_philo			*philo;
 	unsigned long	wait_time;
@@ -122,7 +122,7 @@ int	main(int argc, char *argv[])
 	initialise_philo(g_args.philo_amount, &philo);
 	initialise_mutex(g_args.philo_amount, &g_forks);
 	create_thread(g_args.philo_amount, &th_cycle, philo, philo_cycle);
-	create_thread(g_args.philo_amount, &th_death, philo, death_th);
+	create_thread(g_args.philo_amount, &th_death, philo, death_cycle);
 	g_args.simulate = true;
 	join_and_free_th(g_args.philo_amount, th_cycle, th_death);
 	free_mutex_fork_philo(g_args.philo_amount, g_forks, philo);
