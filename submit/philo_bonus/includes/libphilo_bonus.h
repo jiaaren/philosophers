@@ -6,15 +6,12 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:48:15 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/20 21:00:38 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/20 23:05:01 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBPHILO_BONUS_H
 # define LIBPHILO_BONUS_H
-
-# define SEM_FORKS "/forks"
-# define SEM_START "/start"
 
 // headers for semaphores and constants
 # include <semaphore.h>
@@ -38,6 +35,11 @@
 // for INTMAX
 # include <limits.h>
 
+# define SEM_FORKS "/forks"
+# define SEM_START "/start"
+# define SEM_DIED "/died"
+# define SEM_TUMMY "/tummy"
+
 typedef struct s_globals {
 	int		philo_amount;
 	int		time_to_die;
@@ -46,11 +48,27 @@ typedef struct s_globals {
 	int		times_philo_eat;
 }				t_globals;
 
-int	*initialise_process(int p_num);
+typedef	struct s_sems {
+	sem_t	*forks;
+	sem_t	*start;
+	sem_t	*died;
+	sem_t	*tummy;
+}				t_sems;
+
+typedef struct s_philo {
+	int				philo_num;
+	unsigned long	last_eat_time;
+	int				times_eaten;
+}				t_philo;
+
+int		*initialise_process(int p_num, t_philo *philo);
 void	wait_children(int p_num, int *child_pid);
-bool	initialise_sem_main(int p_num, sem_t **sem, char *sem_name);
-bool	initialise_sem_philo(sem_t **sem, char *sem_name);
+void	initialise_philo(t_philo *philo);
 
 unsigned long	givetime(void);
+
+bool	initialise_sem_main(int p_num, sem_t **sem, char *sem_name);
+bool	initialise_sem_philo(sem_t **sem, char *sem_name);
+void	unlink_sems(void);
 
 #endif
