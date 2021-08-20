@@ -1,0 +1,61 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_utils_initialise.c                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/08/20 18:51:44 by jkhong            #+#    #+#             */
+/*   Updated: 2021/08/20 19:39:58 by jkhong           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "libphilo_bonus.h"
+
+bool	initialise_sem_main(int p_num, sem_t **sem_forks)
+{
+	sem_unlink(SEM_FORKS);
+	*sem_forks = sem_open(SEM_FORKS, O_CREAT, 0660, 5);
+	if (*sem_forks == SEM_FAILED)
+		return (false);
+	return (true);
+}
+
+bool	initialise_sem_philo(sem_t **sem_forks)
+{
+	*sem_forks = sem_open(SEM_FORKS, 0);
+	if (*sem_forks == SEM_FAILED)
+		return (false);
+	return (true);
+}
+
+int	*initialise_process(int p_num)
+{
+	int	*child_pid;
+	int	pid;
+	int	i;
+
+	child_pid = malloc(sizeof(int) * p_num);
+	i = 0;
+	while (i < p_num)
+	{
+		pid = fork();
+		if (pid == 0)
+			break;
+		child_pid[i] = pid;
+		i++;
+	}
+	if (pid != 0)
+		return (child_pid);
+	free(child_pid);
+	return (NULL);
+}
+
+void	wait_children(int p_num, int *child_pid)
+{
+	int i;
+
+	i = 0;
+	while (i < p_num)
+		waitpid(child_pid[i++], NULL, 0);
+}

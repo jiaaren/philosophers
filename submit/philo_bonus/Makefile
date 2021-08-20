@@ -6,14 +6,13 @@
 #    By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/16 13:18:28 by jkhong            #+#    #+#              #
-#    Updated: 2021/08/16 18:13:24 by jkhong           ###   ########.fr        #
+#    Updated: 2021/08/20 18:46:50 by jkhong           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRCS		=	$(wildcard srcs/*.c)
 OBJS		=	${SRCS:.c=.o}
-HEADER		=	-I ./includes -I ./libft/includes
-LIB			=	-L ./libft	-l ft
+HEADER		=	-I ./includes
 CC			=	gcc
 # CFLAGS		=	-Wall -Wextra -Werror
 NAME		=	philo_bonus
@@ -23,21 +22,15 @@ NAME		=	philo_bonus
 
 all:		$(NAME)
 
-libft:
-			make -C ./libft
+$(NAME): 	$(OBJS)
+			$(CC) $(CFLAGS) -pthread -o  $(NAME) $(OBJS)
 
-clean_libft:
-			make clean -C ./libft
-
-$(NAME): 	libft $(OBJS)
-			$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIB) -pthread
-
-clean:		clean_libft
+clean:
 			rm -f $(OBJS)
 
 fclean:		clean
-			rm -f $(NAME) ./libft/libft.a
+			rm -f $(NAME)
 
 re:			fclean all
 
-.PHONY:		all clean fclean re libft clean_libft
+.PHONY:		all clean fclean re
