@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 19:52:55 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/20 19:54:08 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 01:57:48 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,12 @@ bool	initialise_globals(int params, char *args[], t_globals	*g_args)
 	// g_args->ate_enough = false;
 	// g_args->tummies_filled = 0;
 	return (true);
+}
+
+void	end_cycle(t_globals *g_args)
+{
+	g_args->simulate = false;
+	g_args->time_to_die = 0;
+	g_args->time_to_eat = 0;
+	g_args->time_to_sleep = 0;
 }

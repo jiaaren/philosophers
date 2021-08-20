@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 22:52:45 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/20 23:17:40 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 02:25:05 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	unlink_sems(void)
 	unlink(SEM_START);
 	unlink(SEM_DIED);
 	unlink(SEM_TUMMY);
+    unlink(SEM_END);
 }
 
 void	close_all_sems(t_sems *sems)
@@ -42,14 +43,17 @@ void	close_all_sems(t_sems *sems)
 	sem_close(sems->start);
 	sem_close(sems->died);
 	sem_close(sems->tummy);
+	sem_close(sems->end);
 }
 
 /*
 	Died and tummy - initialise to 0
 */
-void	initialise_start_died_tummy(int p_num, t_sems *sems)
+void	initialise_all_sems(int p_num, t_sems *sems)
 {
 	initialise_sem_main(p_num, &(sems->forks), SEM_FORKS);
+	initialise_sem_main(0, &(sems->start), SEM_START);
 	initialise_sem_main(0, &(sems->died), SEM_DIED);
 	initialise_sem_main(0, &(sems->tummy), SEM_TUMMY);
+	initialise_sem_main(0, &(sems->end), SEM_END);
 }
