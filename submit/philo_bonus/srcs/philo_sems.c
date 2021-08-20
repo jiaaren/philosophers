@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 22:52:45 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/20 23:03:35 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/20 23:17:40 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,14 @@ void	unlink_sems(void)
 	unlink(SEM_START);
 	unlink(SEM_DIED);
 	unlink(SEM_TUMMY);
+}
+
+void	close_all_sems(t_sems *sems)
+{
+	sem_close(sems->forks);
+	sem_close(sems->start);
+	sem_close(sems->died);
+	sem_close(sems->tummy);
 }
 
 /*

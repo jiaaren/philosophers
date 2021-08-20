@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:48:15 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/20 23:05:01 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/20 23:17:56 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,7 @@ unsigned long	givetime(void);
 bool	initialise_sem_main(int p_num, sem_t **sem, char *sem_name);
 bool	initialise_sem_philo(sem_t **sem, char *sem_name);
 void	unlink_sems(void);
+void	initialise_start_died_tummy(int p_num, t_sems *sems);
+void	close_all_sems(t_sems *sems);
 
 #endif
