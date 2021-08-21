@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:47:36 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 10:54:14 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 13:40:12 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ void	*hear_one_death(void *arg)
 {
 	sem_wait(g_sems.end);
 	end_cycle(&g_args);
-	sem_post(g_sems.forks);
-	sem_post(g_sems.forks);
+    sem_post(g_sems.end);
 	return (NULL);
 }
 /*
@@ -74,7 +73,7 @@ void	*death_cycle(void *arg)
 		{
 			if (g_args.simulate)
 				printf("%lu %i died\n", givetime(), g_philo.philo_num);
-			sem_post(g_sems.died);
+			sem_post(g_sems.end);
             end_cycle(&g_args);
 			sem_post(g_sems.forks);
 			sem_post(g_sems.forks);
