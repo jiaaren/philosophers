@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:47:36 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 16:12:58 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 16:22:33 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,11 @@ void	*death_cycle(void *arg)
 			end_cycle(&g_args);
 			sem_post(g_sems.forks);
 			sem_post(g_sems.forks);
-			g_args.threads_ended++;
-			return (NULL);
+			break ;
 		}
 	}
+	g_args.threads_ended++;
+	return (NULL);
 }
 
 void	eat(void)

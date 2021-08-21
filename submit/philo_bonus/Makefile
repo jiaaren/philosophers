@@ -6,7 +6,7 @@
 #    By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/16 13:18:28 by jkhong            #+#    #+#              #
-#    Updated: 2021/08/21 16:05:52 by jkhong           ###   ########.fr        #
+#    Updated: 2021/08/21 16:20:01 by jkhong           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ SRCS		=	$(wildcard srcs/*.c)
 OBJS		=	${SRCS:.c=.o}
 HEADER		=	-I ./includes
 CC			=	gcc
-# CFLAGS		=	-Wall -Wextra -Werror
+CFLAGS		=	-Wall -Wextra -Werror
 NAME		=	philo_bonus
 
 %.o: %.c
