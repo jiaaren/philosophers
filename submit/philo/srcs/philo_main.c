@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 16:17:52 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 18:33:09 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	*death_cycle(void *arg)
 		;
 	while (g_args.simulate)
 	{
-		usleep(wait_time * 1000);
+		ft_usleep(wait_time * 1000);
 		curr_time = givetime();
 		wait_time = (philo->last_eat_time + g_args.time_to_die) - curr_time;
 		if (curr_time >= (philo->last_eat_time + g_args.time_to_die)
@@ -63,7 +63,7 @@ void	eat(t_philo *philo)
 		g_args.ate_enough = true;
 		putforks(philo);
 	}
-	usleep(g_args.time_to_eat * 1000);
+	ft_usleep(g_args.time_to_eat * 1000);
 }
 
 void	*philo_cycle(void *arg)
@@ -88,7 +88,7 @@ void	*philo_cycle(void *arg)
 		putforks(philo);
 		if (g_args.simulate)
 			printf("%lu %i is sleeping\n", givetime(), philo->philo_num);
-		usleep(g_args.time_to_sleep * 1000);
+		ft_usleep(g_args.time_to_sleep * 1000);
 	}
 	return (NULL);
 }

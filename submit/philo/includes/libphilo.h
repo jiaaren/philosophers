@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:51:50 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/20 00:16:21 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 18:32:28 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,7 @@ unsigned long	givetime(void);
 bool			initialise_globals(int params, char *args[],
 					t_globals	*g_args);
 void			end_cycle(t_globals *g_args);
+
+void	        ft_usleep(unsigned int n);
 
 #endif
