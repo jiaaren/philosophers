@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:48:15 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 14:58:10 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 15:28:17 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,13 @@ typedef struct s_globals {
 	int		threads_ended;
 }				t_globals;
 
-typedef	struct s_sems {
-	int     philo_amount;
+typedef struct s_sems {
+	int		philo_amount;
 	sem_t	*forks;
 	sem_t	*start;
 	sem_t	*died;
 	sem_t	*tummy;
-	sem_t   *end;
+	sem_t	*end;
 }				t_sems;
 
 typedef struct s_philo {
@@ -68,30 +68,31 @@ typedef struct s_philo {
 	union {
 		pthread_t	th_death;
 		pthread_t	th_hear_parent;
-	} th1;
+	}	u_th1;
 	union {
 		pthread_t	th_hear_death;
 		pthread_t	th_hear_child_ate;
-	} th2;
+	}	u_th2;
 }				t_philo;
 
-void	wait_children(int p_num, int *child_pid);
-void	initialise_philo(t_philo *philo);
-int		*initialise_process(int p_num, t_philo *philo,
-		void *(death_cycle)(void *), void *(hear_one_death)(void *));
-
+void			wait_children(int p_num, int *child_pid);
+void			initialise_philo(t_philo *philo);
+int				*initialise_process(int p_num, t_philo *philo,
+					void *(death_cycle)(void *),
+					void *(hear_one_death)(void *));
 unsigned long	givetime(void);
-void	end_cycle(t_globals *g_args);
-void	commence_cycle(sem_t *start, int p_num);
+void			end_cycle(t_globals *g_args);
+void			commence_cycle(sem_t *start, int p_num);
 
-bool	initialise_sem_main(int p_num, sem_t **sem, char *sem_name);
-bool	initialise_sem_philo(sem_t **sem, char *sem_name);
-void	initialise_all_sems(int p_num, t_sems *sems);
-void	close_all_sems(t_sems *sems);
+bool			initialise_sem_main(int p_num, sem_t **sem, char *sem_name);
+bool			initialise_sem_philo(sem_t **sem, char *sem_name);
+void			initialise_all_sems(int p_num, t_sems *sems);
+void			close_all_sems(t_sems *sems);
 
-void	*hear_one_death(void *arg);
+void			*hear_one_death(void *arg);
 
-bool	initialise_globals(int params, char *args[], t_globals	*g_args);
-void philo_main(t_globals args);
+bool			initialise_globals(int params, char *args[],
+					t_globals	*g_args);
+void			philo_main(t_globals args);
 
 #endif

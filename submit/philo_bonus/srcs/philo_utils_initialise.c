@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:51:44 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 14:39:50 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 15:28:51 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ int	*initialise_process(int p_num, t_philo *philo,
 	if (pid != 0)
 		return (child_pid);
 	free(child_pid);
-	pthread_create(&philo->th1.th_death, NULL, death_cycle, NULL);
-	pthread_detach(philo->th1.th_death);
-	pthread_create(&philo->th1.th_hear_parent, NULL, hear_one_death, NULL);
-	pthread_detach(philo->th1.th_hear_parent);
+	pthread_create(&philo->u_th1.th_death, NULL, death_cycle, NULL);
+	pthread_detach(philo->u_th1.th_death);
+	pthread_create(&philo->u_th1.th_hear_parent, NULL, hear_one_death, NULL);
+	pthread_detach(philo->u_th1.th_hear_parent);
 	return (NULL);
 }
