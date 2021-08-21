@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 22:52:45 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 10:49:54 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 14:58:14 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,22 @@ bool	initialise_sem_philo(sem_t **sem, char *sem_name)
 	return (true);
 }
 
-void	unlink_sems(void)
+/*
+	Died and tummy - initialise to 0
+*/
+void	initialise_all_sems(int p_num, t_sems *sems)
 {
 	sem_unlink(SEM_FORKS);
 	sem_unlink(SEM_START);
 	sem_unlink(SEM_DIED);
 	sem_unlink(SEM_TUMMY);
-    sem_unlink(SEM_END);
+	sem_unlink(SEM_END);
+	sems->philo_amount = p_num;
+	initialise_sem_main(p_num, &(sems->forks), SEM_FORKS);
+	initialise_sem_main(0, &(sems->start), SEM_START);
+	initialise_sem_main(0, &(sems->died), SEM_DIED);
+	initialise_sem_main(0, &(sems->tummy), SEM_TUMMY);
+	initialise_sem_main(0, &(sems->end), SEM_END);
 }
 
 void	close_all_sems(t_sems *sems)
@@ -46,15 +55,11 @@ void	close_all_sems(t_sems *sems)
 	sem_close(sems->end);
 }
 
-/*
-	Died and tummy - initialise to 0
-*/
-void	initialise_all_sems(int p_num, t_sems *sems)
+void	commence_cycle(sem_t *start, int p_num)
 {
-    sems->philo_amount = p_num;
-	initialise_sem_main(p_num, &(sems->forks), SEM_FORKS);
-	initialise_sem_main(0, &(sems->start), SEM_START);
-	initialise_sem_main(0, &(sems->died), SEM_DIED);
-	initialise_sem_main(0, &(sems->tummy), SEM_TUMMY);
-	initialise_sem_main(0, &(sems->end), SEM_END);
+	int	i;
+
+	i = 0;
+	while (i++ < p_num)
+		sem_post(start);
 }

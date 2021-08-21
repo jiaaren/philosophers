@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:48:15 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 02:47:31 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 14:58:10 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,16 +49,16 @@ typedef struct s_globals {
 	int		time_to_eat;
 	int		time_to_sleep;
 	int		times_philo_eat;
-    int		threads_ended;
+	int		threads_ended;
 }				t_globals;
 
 typedef	struct s_sems {
-    int     philo_amount;
+	int     philo_amount;
 	sem_t	*forks;
 	sem_t	*start;
 	sem_t	*died;
 	sem_t	*tummy;
-    sem_t   *end;
+	sem_t   *end;
 }				t_sems;
 
 typedef struct s_philo {
@@ -75,20 +75,23 @@ typedef struct s_philo {
 	} th2;
 }				t_philo;
 
-// int		*initialise_process(int p_num, t_philo *philo, void *(f)(void *));
 void	wait_children(int p_num, int *child_pid);
 void	initialise_philo(t_philo *philo);
+int		*initialise_process(int p_num, t_philo *philo,
+		void *(death_cycle)(void *), void *(hear_one_death)(void *));
 
 unsigned long	givetime(void);
 void	end_cycle(t_globals *g_args);
+void	commence_cycle(sem_t *start, int p_num);
 
 bool	initialise_sem_main(int p_num, sem_t **sem, char *sem_name);
 bool	initialise_sem_philo(sem_t **sem, char *sem_name);
-void	unlink_sems(void);
 void	initialise_all_sems(int p_num, t_sems *sems);
 void	close_all_sems(t_sems *sems);
 
-void	*hear_child_death(void *arg);
 void	*hear_one_death(void *arg);
+
+bool	initialise_globals(int params, char *args[], t_globals	*g_args);
+void philo_main(t_globals args);
 
 #endif

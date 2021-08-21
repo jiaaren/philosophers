@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:47:36 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 14:05:58 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 14:59:07 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,39 +20,8 @@ void	*hear_one_death(void *arg)
 {
 	sem_wait(g_sems.end);
 	end_cycle(&g_args);
-    sem_post(g_sems.end);
+	sem_post(g_sems.end);
 	g_args.threads_ended++;
-	return (NULL);
-}
-/*
-	Handle freeing of malloc locally within function
-	free when pid == 0, and return NULL
-	if parent, return int array
-*/
-int	*initialise_process(int p_num, t_philo *philo, void *(f)(void *))
-{
-	int	*child_pid;
-	int	pid;
-	int	i;
-
-	child_pid = malloc(sizeof(int) * p_num);
-	i = 0;
-	while (i < p_num)
-	{
-		philo->philo_num = 1 + i;
-		pid = fork();
-		if (pid == 0)
-			break;
-		child_pid[i] = pid;
-		i++;
-	}
-	if (pid != 0)
-		return (child_pid);
-	free(child_pid);
-	pthread_create(&philo->th1.th_death, NULL, f, NULL);
-	pthread_detach(philo->th1.th_death);
-	pthread_create(&philo->th1.th_hear_parent, NULL, hear_one_death, NULL);
-	pthread_detach(philo->th1.th_hear_parent);
 	return (NULL);
 }
 
@@ -75,7 +44,7 @@ void	*death_cycle(void *arg)
 			if (g_args.simulate)
 				printf("%lu %i died\n", givetime(), g_philo.philo_num);
 			sem_post(g_sems.end);
-            end_cycle(&g_args);
+			end_cycle(&g_args);
 			sem_post(g_sems.forks);
 			sem_post(g_sems.forks);
 			break ;
@@ -90,7 +59,7 @@ void	eat(void)
 	g_philo.last_eat_time = givetime();
 	if (g_args.simulate)
 		printf("%lu %i is eating\n", g_philo.last_eat_time, g_philo.philo_num);
-	(g_philo.times_eaten)++;
+	// (g_philo.times_eaten)++;
 	// if (g_philo.times_eaten >= g_args.times_philo_eat)
 	// 	g_args.tummies_filled++;
 	// if (g_args.tummies_filled >= g_args.philo_amount)
@@ -104,8 +73,6 @@ void	eat(void)
 
 void	philo_cycle(void)
 {
-	// while (!g_args.simulate && !g_args.ate_enough)
-	// 	;
 	g_args.simulate = true;
 	g_philo.last_eat_time = givetime();
 	while (g_args.simulate)
@@ -127,21 +94,15 @@ void	philo_cycle(void)
 	}
 }
 
-int main(void)
+void	philo_main(t_globals args)
 {
 	int		*child_pid;
-	int		num = 5;
-	
-	// globals
-	g_args.time_to_die = 100;
-	g_args.time_to_eat = 50;
-	g_args.time_to_sleep = 50;
-	g_args.threads_ended = 0;
 
+	g_args = args;
 	initialise_philo(&g_philo);
-	unlink_sems();
-	initialise_all_sems(num, &g_sems);
-	child_pid = initialise_process(num, &g_philo, death_cycle);
+	initialise_all_sems(g_args.philo_amount, &g_sems);
+	child_pid = initialise_process(g_args.philo_amount,
+			&g_philo, death_cycle, hear_one_death);
 	if (child_pid == NULL)
 	{
 		sem_wait(g_sems.start);
@@ -153,14 +114,10 @@ int main(void)
 	}
 	else
 	{
-		pthread_create(&g_philo.th2.th_hear_death, NULL, hear_child_death, (void *)&g_sems);
-		for (int i = 0; i < num; i++)
-			sem_post(g_sems.start);
-		wait_children(num, child_pid);
-		pthread_join(g_philo.th2.th_hear_death, NULL);
-        free(child_pid);
+		commence_cycle(g_sems.start, g_args.philo_amount);
+		wait_children(g_args.philo_amount, child_pid);
+		free(child_pid);
 		// run parent process
 		close_all_sems(&g_sems);
 	}
-	return (0);
 }
