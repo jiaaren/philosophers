@@ -6,19 +6,35 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/19 21:00:04 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 18:32:47 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 21:24:47 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libphilo.h"
 
-unsigned long	givetime(void)
+size_t	givetime(void)
 {
 	struct timeval	_timeval;
 
 	gettimeofday(&_timeval, NULL);
-	return ((_timeval.tv_sec * (unsigned long)1000
+	return ((_timeval.tv_sec * (size_t)1000
 			+ (_timeval.tv_usec / 1000)) % 1000000);
+}
+
+void	ft_usleep(unsigned int n)
+{
+	struct timeval	start;
+	struct timeval	step;
+
+	gettimeofday(&start, NULL);
+	while (true)
+	{
+		usleep(50);
+		gettimeofday(&step, NULL);
+		if ((size_t)(((size_t)(step.tv_sec - start.tv_sec)) * 1000000 +
+				((size_t)(step.tv_usec - start.tv_usec))) > n)
+			break ;
+	}
 }
 
 int	ft_atoi(const char *str)
@@ -87,20 +103,4 @@ void	end_cycle(t_globals *g_args)
 	g_args->time_to_die = 0;
 	g_args->time_to_eat = 0;
 	g_args->time_to_sleep = 0;
-}
-
-void	ft_usleep(unsigned int n)
-{
-	struct timeval	start;
-	struct timeval	step;
-
-	gettimeofday(&start, NULL);
-	while (1)
-	{
-		usleep(50);
-		gettimeofday(&step, NULL);
-		if ((size_t)(((size_t)(step.tv_sec - start.tv_sec)) * 1000000 +
-            ((size_t)(step.tv_usec - start.tv_usec))) > n)
-			break ;
-	}
 }

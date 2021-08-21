@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:48:15 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 15:57:41 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 21:31:49 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,36 +56,35 @@ typedef struct s_sems {
 }				t_sems;
 
 typedef struct s_philo {
-	int				philo_num;
-	unsigned long	last_eat_time;
-	int				times_eaten;
-	pthread_t		th_death;
-	pthread_t		th_hear_parent;
+	int			philo_num;
+	size_t		last_eat_time;
+	int			times_eaten;
+	pthread_t	th_death;
+	pthread_t	th_hear_parent;
 }				t_philo;
 
 // initialisations from main
-bool			initialise_globals(int params, char *args[],
-					t_globals	*g_args);
-void			philo_main(t_globals args);
+bool	initialise_globals(int params, char *args[],
+			t_globals	*g_args);
+void	philo_main(t_globals args);
 
 // initialisations from philo_main
-void			initialise_philo(t_philo *philo);
-int				*initialise_process(int p_num, t_philo *philo,
-					void *(death_cycle)(void *),
-					void *(hear_one_death)(void *));
-void			wait_children(int p_num, int *child_pid);
+void	initialise_philo(t_philo *philo);
+int		*initialise_process(int p_num, t_philo *philo,
+			void *(death_cycle)(void *), void *(hear_one_death)(void *));
+void	wait_children(int p_num, int *child_pid);
 
 // utilities
-unsigned long	givetime(void);
-void			end_cycle(t_globals *g_args);
-void			commence_cycle(sem_t *start, int p_num);
+size_t	givetime(void);
+void	end_cycle(t_globals *g_args);
+void	commence_cycle(sem_t *start, int p_num);
 
 // semaphore utils
-bool			initialise_sem_main(int p_num, sem_t **sem, char *sem_name);
-bool			initialise_sem_philo(sem_t **sem, char *sem_name);
-void			initialise_all_sems(int p_num, t_sems *sems);
-void			close_all_sems(t_sems *sems);
+bool	initialise_sem_main(int p_num, sem_t **sem, char *sem_name);
+bool	initialise_sem_philo(sem_t **sem, char *sem_name);
+void	initialise_all_sems(int p_num, t_sems *sems);
+void	close_all_sems(t_sems *sems);
 
-void			*hear_one_death(void *arg);
+void	ft_usleep(unsigned int n);
 
 #endif

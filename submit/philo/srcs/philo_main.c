@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 18:33:09 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 21:32:30 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ void	putforks(t_philo *philo)
 
 void	*death_cycle(void *arg)
 {
-	t_philo			*philo;
-	unsigned long	wait_time;
-	unsigned long	curr_time;
+	t_philo	*philo;
+	size_t	wait_time;
+	size_t	curr_time;
 
 	philo = (t_philo *)(arg);
 	wait_time = g_args.time_to_die;

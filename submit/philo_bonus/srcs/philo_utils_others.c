@@ -6,19 +6,35 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 19:52:55 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 15:43:14 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 21:25:30 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libphilo_bonus.h"
 
-unsigned long	givetime(void)
+size_t	givetime(void)
 {
 	struct timeval	_timeval;
 
 	gettimeofday(&_timeval, NULL);
-	return ((_timeval.tv_sec * (unsigned long)1000
+	return ((_timeval.tv_sec * (size_t)1000
 			+ (_timeval.tv_usec / 1000)) % 1000000);
+}
+
+void	ft_usleep(unsigned int n)
+{
+	struct timeval	start;
+	struct timeval	step;
+
+	gettimeofday(&start, NULL);
+	while (true)
+	{
+		usleep(50);
+		gettimeofday(&step, NULL);
+		if ((size_t)(((size_t)(step.tv_sec - start.tv_sec)) * 1000000 +
+				((size_t)(step.tv_usec - start.tv_usec))) > n)
+			break ;
+	}
 }
 
 int	ft_atoi(const char *str)

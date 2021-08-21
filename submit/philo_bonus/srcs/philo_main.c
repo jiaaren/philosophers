@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:47:36 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 16:22:33 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 21:30:52 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ void	*hear_one_death(void *arg)
 // initialising wait_time is unnecessary, just reduce number of lines
 void	*death_cycle(void *arg)
 {
-	unsigned long	wait_time;
-	unsigned long	curr_time;
+	size_t	wait_time;
+	size_t	curr_time;
 
 	(void)arg;
 	wait_time = g_args.time_to_die;
@@ -38,7 +38,7 @@ void	*death_cycle(void *arg)
 		;
 	while (g_args.simulate)
 	{
-		usleep(wait_time * 1000);
+		ft_usleep(wait_time * 1000);
 		curr_time = givetime();
 		wait_time = (g_philo.last_eat_time + g_args.time_to_die) - curr_time;
 		if (curr_time >= (g_philo.last_eat_time + g_args.time_to_die))
@@ -61,7 +61,7 @@ void	eat(void)
 	g_philo.last_eat_time = givetime();
 	if (g_args.simulate)
 		printf("%lu %i is eating\n", g_philo.last_eat_time, g_philo.philo_num);
-	usleep(g_args.time_to_eat * 1000);
+	ft_usleep(g_args.time_to_eat * 1000);
 }
 
 void	philo_cycle(void)
@@ -83,7 +83,7 @@ void	philo_cycle(void)
 		sem_post(g_sems.forks);
 		if (g_args.simulate)
 			printf("%lu %i is sleeping\n", givetime(), g_philo.philo_num);
-		usleep(g_args.time_to_sleep * 1000);
+		ft_usleep(g_args.time_to_sleep * 1000);
 	}
 }
 
