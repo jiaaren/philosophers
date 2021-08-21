@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 21:32:30 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 22:59:01 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,6 @@ void	*philo_cycle(void *arg)
 	philo->last_eat_time = givetime();
 	while (g_args.simulate)
 	{
-		if (g_args.simulate)
-			printf("%lu %i is thinking\n", givetime(), philo->philo_num);
 		pthread_mutex_lock(&(g_forks[philo->fork_one]));
 		if (g_args.simulate)
 			printf("%lu %i has taken a fork\n", givetime(), philo->philo_num);
@@ -89,6 +87,8 @@ void	*philo_cycle(void *arg)
 		if (g_args.simulate)
 			printf("%lu %i is sleeping\n", givetime(), philo->philo_num);
 		ft_usleep(g_args.time_to_sleep * 1000);
+		if (g_args.simulate)
+			printf("%lu %i is thinking\n", givetime(), philo->philo_num);
 	}
 	return (NULL);
 }
