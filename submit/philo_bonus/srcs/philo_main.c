@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:47:36 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 13:40:12 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 14:05:58 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	*hear_one_death(void *arg)
 	sem_wait(g_sems.end);
 	end_cycle(&g_args);
     sem_post(g_sems.end);
+	g_args.threads_ended++;
 	return (NULL);
 }
 /*
@@ -68,7 +69,7 @@ void	*death_cycle(void *arg)
 		usleep(wait_time * 1000);
 		curr_time = givetime();
 		wait_time = (g_philo.last_eat_time + g_args.time_to_die) - curr_time;
-		if (curr_time > (g_philo.last_eat_time + g_args.time_to_die)
+		if (curr_time >= (g_philo.last_eat_time + g_args.time_to_die)
 			|| g_args.philo_amount == 1)
 		{
 			if (g_args.simulate)
@@ -145,7 +146,7 @@ int main(void)
 	{
 		sem_wait(g_sems.start);
 		philo_cycle();
-		while (g_args.threads_ended != 1)
+		while (g_args.threads_ended != 2)
 			;
 		usleep(100000);
 		close_all_sems(&g_sems);
@@ -153,11 +154,11 @@ int main(void)
 	else
 	{
 		pthread_create(&g_philo.th2.th_hear_death, NULL, hear_child_death, (void *)&g_sems);
-		pthread_detach(g_philo.th2.th_hear_death);
 		for (int i = 0; i < num; i++)
 			sem_post(g_sems.start);
 		wait_children(num, child_pid);
-		free(child_pid);
+		pthread_join(g_philo.th2.th_hear_death, NULL);
+        free(child_pid);
 		// run parent process
 		close_all_sems(&g_sems);
 	}
