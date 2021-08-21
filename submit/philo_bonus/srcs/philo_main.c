@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:47:36 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 02:03:24 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 10:54:14 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,46 @@
 static t_globals	g_args;
 static t_philo		g_philo;
 static t_sems		g_sems;
+
+void	*hear_one_death(void *arg)
+{
+	sem_wait(g_sems.end);
+	end_cycle(&g_args);
+	sem_post(g_sems.forks);
+	sem_post(g_sems.forks);
+	return (NULL);
+}
+/*
+	Handle freeing of malloc locally within function
+	free when pid == 0, and return NULL
+	if parent, return int array
+*/
+int	*initialise_process(int p_num, t_philo *philo, void *(f)(void *))
+{
+	int	*child_pid;
+	int	pid;
+	int	i;
+
+	child_pid = malloc(sizeof(int) * p_num);
+	i = 0;
+	while (i < p_num)
+	{
+		philo->philo_num = 1 + i;
+		pid = fork();
+		if (pid == 0)
+			break;
+		child_pid[i] = pid;
+		i++;
+	}
+	if (pid != 0)
+		return (child_pid);
+	free(child_pid);
+	pthread_create(&philo->th1.th_death, NULL, f, NULL);
+	pthread_detach(philo->th1.th_death);
+	pthread_create(&philo->th1.th_hear_parent, NULL, hear_one_death, NULL);
+	pthread_detach(philo->th1.th_hear_parent);
+	return (NULL);
+}
 
 void	*death_cycle(void *arg)
 {
@@ -34,7 +74,8 @@ void	*death_cycle(void *arg)
 		{
 			if (g_args.simulate)
 				printf("%lu %i died\n", givetime(), g_philo.philo_num);
-			end_cycle(&g_args);
+			sem_post(g_sems.died);
+            end_cycle(&g_args);
 			sem_post(g_sems.forks);
 			sem_post(g_sems.forks);
 			break ;
@@ -112,6 +153,8 @@ int main(void)
 	}
 	else
 	{
+		pthread_create(&g_philo.th2.th_hear_death, NULL, hear_child_death, (void *)&g_sems);
+		pthread_detach(g_philo.th2.th_hear_death);
 		for (int i = 0; i < num; i++)
 			sem_post(g_sems.start);
 		wait_children(num, child_pid);

@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 22:52:45 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 02:25:05 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 10:49:54 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,11 @@ bool	initialise_sem_philo(sem_t **sem, char *sem_name)
 
 void	unlink_sems(void)
 {
-	unlink(SEM_FORKS);
-	unlink(SEM_START);
-	unlink(SEM_DIED);
-	unlink(SEM_TUMMY);
-    unlink(SEM_END);
+	sem_unlink(SEM_FORKS);
+	sem_unlink(SEM_START);
+	sem_unlink(SEM_DIED);
+	sem_unlink(SEM_TUMMY);
+    sem_unlink(SEM_END);
 }
 
 void	close_all_sems(t_sems *sems)
@@ -51,6 +51,7 @@ void	close_all_sems(t_sems *sems)
 */
 void	initialise_all_sems(int p_num, t_sems *sems)
 {
+    sems->philo_amount = p_num;
 	initialise_sem_main(p_num, &(sems->forks), SEM_FORKS);
 	initialise_sem_main(0, &(sems->start), SEM_START);
 	initialise_sem_main(0, &(sems->died), SEM_DIED);

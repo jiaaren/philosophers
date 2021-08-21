@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:48:15 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 02:24:22 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 02:47:31 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ typedef struct s_philo {
 	} th2;
 }				t_philo;
 
-int		*initialise_process(int p_num, t_philo *philo, void *(f)(void *));
+// int		*initialise_process(int p_num, t_philo *philo, void *(f)(void *));
 void	wait_children(int p_num, int *child_pid);
 void	initialise_philo(t_philo *philo);
 
@@ -87,5 +87,8 @@ bool	initialise_sem_philo(sem_t **sem, char *sem_name);
 void	unlink_sems(void);
 void	initialise_all_sems(int p_num, t_sems *sems);
 void	close_all_sems(t_sems *sems);
+
+void	*hear_child_death(void *arg);
+void	*hear_one_death(void *arg);
 
 #endif
