@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:47:36 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 14:59:07 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 16:12:58 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ static t_sems		g_sems;
 
 void	*hear_one_death(void *arg)
 {
+	(void)arg;
 	sem_wait(g_sems.end);
 	end_cycle(&g_args);
 	sem_post(g_sems.end);
@@ -25,11 +26,13 @@ void	*hear_one_death(void *arg)
 	return (NULL);
 }
 
+// initialising wait_time is unnecessary, just reduce number of lines
 void	*death_cycle(void *arg)
 {
 	unsigned long	wait_time;
 	unsigned long	curr_time;
 
+	(void)arg;
 	wait_time = g_args.time_to_die;
 	while (!(g_philo.last_eat_time))
 		;
@@ -38,8 +41,7 @@ void	*death_cycle(void *arg)
 		usleep(wait_time * 1000);
 		curr_time = givetime();
 		wait_time = (g_philo.last_eat_time + g_args.time_to_die) - curr_time;
-		if (curr_time >= (g_philo.last_eat_time + g_args.time_to_die)
-			|| g_args.philo_amount == 1)
+		if (curr_time >= (g_philo.last_eat_time + g_args.time_to_die))
 		{
 			if (g_args.simulate)
 				printf("%lu %i died\n", givetime(), g_philo.philo_num);
@@ -47,11 +49,10 @@ void	*death_cycle(void *arg)
 			end_cycle(&g_args);
 			sem_post(g_sems.forks);
 			sem_post(g_sems.forks);
-			break ;
-		}	
+			g_args.threads_ended++;
+			return (NULL);
+		}
 	}
-	g_args.threads_ended++;
-	return (NULL);
 }
 
 void	eat(void)
@@ -59,15 +60,6 @@ void	eat(void)
 	g_philo.last_eat_time = givetime();
 	if (g_args.simulate)
 		printf("%lu %i is eating\n", g_philo.last_eat_time, g_philo.philo_num);
-	// (g_philo.times_eaten)++;
-	// if (g_philo.times_eaten >= g_args.times_philo_eat)
-	// 	g_args.tummies_filled++;
-	// if (g_args.tummies_filled >= g_args.philo_amount)
-	// {
-	// 	end_cycle(&g_args);
-	// 	g_args.ate_enough = true;
-	// 	putforks(philo);
-	// }
 	usleep(g_args.time_to_eat * 1000);
 }
 
@@ -117,7 +109,6 @@ void	philo_main(t_globals args)
 		commence_cycle(g_sems.start, g_args.philo_amount);
 		wait_children(g_args.philo_amount, child_pid);
 		free(child_pid);
-		// run parent process
 		close_all_sems(&g_sems);
 	}
 }

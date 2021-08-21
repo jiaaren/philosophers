@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/20 21:29:04 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 16:17:52 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	*death_cycle(void *arg)
 		usleep(wait_time * 1000);
 		curr_time = givetime();
 		wait_time = (philo->last_eat_time + g_args.time_to_die) - curr_time;
-		if (curr_time > (philo->last_eat_time + g_args.time_to_die)
+		if (curr_time >= (philo->last_eat_time + g_args.time_to_die)
 			|| g_args.philo_amount == 1)
 		{
 			if (g_args.simulate)
