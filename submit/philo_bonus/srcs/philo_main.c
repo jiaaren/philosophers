@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:47:36 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 22:59:56 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/21 23:34:37 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ void	philo_cycle(void)
 	g_philo.last_eat_time = givetime();
 	while (g_args.simulate)
 	{
+		if (g_args.simulate)
+			printf("%lu %i is thinking\n", givetime(), g_philo.philo_num);
 		sem_wait(g_sems.forks);
 		if (g_args.simulate)
 			printf("%lu %i has taken a fork\n", givetime(), g_philo.philo_num);
@@ -82,8 +84,6 @@ void	philo_cycle(void)
 		if (g_args.simulate)
 			printf("%lu %i is sleeping\n", givetime(), g_philo.philo_num);
 		ft_usleep(g_args.time_to_sleep * 1000);
-		if (g_args.simulate)
-			printf("%lu %i is thinking\n", givetime(), g_philo.philo_num);
 	}
 }
 
