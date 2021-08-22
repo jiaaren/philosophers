@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:47:36 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 23:34:37 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/22 11:57:35 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,15 @@ void	*death_cycle(void *arg)
 
 void	eat(void)
 {
+	if (g_philo.times_eaten == g_args.times_philo_eat)
+	{
+		end_cycle(&g_args);
+		sem_post(g_sems.end);
+	}
 	g_philo.last_eat_time = givetime();
 	if (g_args.simulate)
 		printf("%lu %i is eating\n", g_philo.last_eat_time, g_philo.philo_num);
+	g_philo.times_eaten++;
 	ft_usleep(g_args.time_to_eat * 1000);
 }
 

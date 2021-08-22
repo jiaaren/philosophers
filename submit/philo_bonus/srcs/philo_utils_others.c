@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 19:52:55 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 21:25:30 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/22 11:45:49 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,13 @@ bool	initialise_globals(int params, char *args[], t_globals	*g_args)
 			g_args->time_to_die = num;
 		else if (i == 2)
 			g_args->time_to_eat = num;
-		else
+		else if (i == 3)
 			g_args->time_to_sleep = num;
+		else
+			g_args->times_philo_eat = num;
 	}
+	if (params == 4)
+		g_args->times_philo_eat = INT_MAX;
 	g_args->simulate = false;
 	g_args->threads_ended = 0;
 	return (true);
