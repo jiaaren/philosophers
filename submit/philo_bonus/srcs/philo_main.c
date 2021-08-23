@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/20 18:47:36 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/22 11:57:35 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/23 12:37:46 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	*hear_one_death(void *arg)
 	sem_wait(g_sems.end);
 	end_cycle(&g_args);
 	sem_post(g_sems.end);
-	g_args.threads_ended++;
 	return (NULL);
 }
 
@@ -52,7 +51,6 @@ void	*death_cycle(void *arg)
 			break ;
 		}
 	}
-	g_args.threads_ended++;
 	return (NULL);
 }
 
@@ -106,9 +104,8 @@ void	philo_main(t_globals args)
 	{
 		sem_wait(g_sems.start);
 		philo_cycle();
-		while (g_args.threads_ended != 2)
-			;
-		usleep(100000);
+		pthread_join(g_philo.th_hear_parent, NULL);
+		pthread_join(g_philo.th_death, NULL);
 		close_all_sems(&g_sems);
 	}
 	else
