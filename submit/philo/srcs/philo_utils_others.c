@@ -29,10 +29,10 @@ void	ft_usleep(unsigned int n)
 	gettimeofday(&start, NULL);
 	while (true)
 	{
-		usleep(50);
+		usleep(25);
 		gettimeofday(&step, NULL);
 		if ((size_t)(((size_t)(step.tv_sec - start.tv_sec)) * 1000000 +
-				((size_t)(step.tv_usec - start.tv_usec))) > n)
+				((size_t)(step.tv_usec - start.tv_usec))) >= n)
 			break ;
 	}
 }

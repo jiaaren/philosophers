@@ -24,23 +24,24 @@ void	initialise_philo(int p_num, t_philo **philo)
 		tmp[i].philo_num = i + 1;
 		tmp[i].times_eaten = 0;
 		tmp[i].last_eat_time = 0;
-		//tmp[i].fork_one = i;
-		//tmp[i].fork_two = (i + 1) % p_num;
-		//if (i == (p_num - 1))
+		tmp[i].fork_one = i;
+		tmp[i].fork_two = (i + 1) % p_num;
+		// if (i == (p_num - 1))
 		//{
-		//	tmp[i].fork_one = 0;
+		// 	tmp[i].fork_one = 0;
 		//	tmp[i].fork_two = i;
 		//}
-		if (i % 2 == 0)
-		{
-			tmp[i].fork_one = i;
-			tmp[i].fork_two = (i + 1) % p_num;
-		}
-		else
-		{
-			tmp[i].fork_two = i;
-			tmp[i].fork_one = (i + 1) % p_num;
-		}
+
+		//if (i % 2 == 0)
+		//{
+		//	tmp[i].fork_one = i;
+		//	tmp[i].fork_two = (i + 1) % p_num;
+		//}
+		//else
+		//{
+		//	tmp[i].fork_two = i;
+		//	tmp[i].fork_one = (i + 1) % p_num;
+		//}
 		i++;
 	}
 	*philo = tmp;
