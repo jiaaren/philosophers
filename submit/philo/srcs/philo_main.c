@@ -36,7 +36,7 @@ void	*death_cycle(void *arg)
 		ft_usleep(wait_time * 1000);
 		curr_time = givetime();
 		wait_time = (philo->last_eat_time + g_args.time_to_die) - curr_time;
-		if (curr_time >= (philo->last_eat_time + g_args.time_to_die)
+		if (curr_time > (philo->last_eat_time + g_args.time_to_die)
 			|| g_args.philo_amount == 1)
 		{
 			if (g_args.simulate)
