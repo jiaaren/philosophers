@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/25 17:54:12 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/25 20:02:37 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,9 @@ void	*death_cycle(void *arg)
 		if (curr_time > (philo->last_eat_time + g_args.time_to_die)
 			|| g_args.philo_amount == 1)
 		{
-			pthread_mutex_lock(&(g_seq[philo->philo_num - 1]));
 			if (g_args.simulate)
 				printf("%lu %i died\n", givetime(), philo->philo_num);
 			end_cycle(&g_args);
-			pthread_mutex_unlock(&(g_seq[philo->philo_num - 1]));
 			putforks(philo);
 			break ;
 		}
@@ -63,7 +61,8 @@ void	*death_cycle(void *arg)
 void	eat(t_philo *philo)
 {
 	philo->last_eat_time = givetime();
-	print_status("%lu %i is eating\n", philo->philo_num);
+	if (g_args.simulate)
+		printf("%lu %i is eating\n", philo->last_eat_time, philo->philo_num);
 	(philo->times_eaten)++;
 	if (philo->times_eaten >= g_args.times_philo_eat)
 		g_args.tummies_filled++;
@@ -86,14 +85,18 @@ void	*philo_cycle(void *arg)
 	philo->last_eat_time = givetime();
 	while (g_args.simulate)
 	{
-		print_status("%lu %i is thinking\n", philo->philo_num);
+		if (g_args.simulate)
+			printf("%lu %i is thinking\n", givetime(), philo->philo_num);
 		pthread_mutex_lock(&(g_forks[philo->fork_one]));
-		print_status("%lu %i has taken a fork\n", philo->philo_num);
+		if (g_args.simulate)
+			printf("%lu %i has taken a fork\n", givetime(), philo->philo_num);
 		pthread_mutex_lock(&(g_forks[philo->fork_two]));
-		print_status("%lu %i has taken a fork\n", philo->philo_num);
+		if (g_args.simulate)
+			printf("%lu %i has taken a fork\n", givetime(), philo->philo_num);
 		eat(philo);
 		putforks(philo);
-		print_status("%lu %i is sleeping\n", philo->philo_num);
+		if (g_args.simulate)
+			printf("%lu %i is sleeping\n", givetime(), philo->philo_num);
 		ft_usleep(g_args.time_to_sleep * 1000);
 	}
 	return (NULL);
