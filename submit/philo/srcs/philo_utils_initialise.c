@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/19 19:57:57 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/23 12:30:50 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/25 17:42:18 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,14 @@ void	initialise_philo(int p_num, t_philo **philo)
 		tmp[i].philo_num = i + 1;
 		tmp[i].times_eaten = 0;
 		tmp[i].last_eat_time = 0;
-		if (i % 2 == 0)
-		{
-			tmp[i].fork_one = i;
-			tmp[i].fork_two = (i + 1) % p_num;
-		}
-		else
-		{
-			tmp[i].fork_two = i;
-			tmp[i].fork_one = (i + 1) % p_num;
-		}
+		tmp[i].fork_one = i;
+		tmp[i].fork_two = (i + 1) % p_num;
 		i++;
 	}
 	*philo = tmp;
 }
 
-void	initialise_mutex(int p_num, pthread_mutex_t **forks)
+void	initialise_mutex(int p_num, pthread_mutex_t **forks, pthread_mutex_t **seq)
 {
 	pthread_mutex_t	*tmp_forks;
 	int				i;
@@ -49,6 +41,11 @@ void	initialise_mutex(int p_num, pthread_mutex_t **forks)
 	while (i < p_num)
 		pthread_mutex_init(&(tmp_forks[i++]), NULL);
 	*forks = tmp_forks;
+	i = 0;
+	tmp_forks = malloc(sizeof(pthread_mutex_t) * p_num);
+	while (i < p_num)
+		pthread_mutex_init(&(tmp_forks[i++]), NULL);
+	*seq = tmp_forks;
 }
 
 void	create_thread(int p_num, pthread_t **thread,
@@ -82,13 +79,18 @@ void	join_and_free_th(int p_num, pthread_t *th_cycle, pthread_t *th_death)
 	free(th_death);
 }
 
-void	free_mutex_fork_philo(int p_num, pthread_mutex_t *forks, t_philo *philo)
+void	free_mutex_fork_philo(int p_num, pthread_mutex_t *forks,
+			pthread_mutex_t *seq, t_philo *philo)
 {
 	int	i;
 
 	i = 0;
 	while (i < p_num)
+	{
 		pthread_mutex_destroy(&(forks[i++]));
+		pthread_mutex_destroy(&(seq[i++]));
+	}
 	free(forks);
+	free(seq);
 	free(philo);
 }
