@@ -88,9 +88,9 @@ void	*philo_cycle(void *arg)
 		pthread_mutex_lock(&(g_forks[philo->fork_two]));
 		print_status("has taken a fork\n", philo->philo_num);
 		eat(philo);
+		print_status("is sleeping\n", philo->philo_num);
 		pthread_mutex_unlock(&(g_forks[philo->fork_one]));
 		pthread_mutex_unlock(&(g_forks[philo->fork_two]));
-		print_status("is sleeping\n", philo->philo_num);
 		ft_usleep(g_args.time_to_sleep * 1000);
 		print_status("is thinking\n", philo->philo_num);
 	}
