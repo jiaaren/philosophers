@@ -92,7 +92,6 @@ bool	initialise_globals(int params, char *args[], t_globals	*g_args)
 	if (params == 4)
 		g_args->times_philo_eat = INT_MAX;
 	g_args->simulate = false;
-	g_args->threads_ended = 0;
 	return (true);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/19 21:00:04 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/21 21:24:47 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/26 11:59:31 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,10 +97,12 @@ bool	initialise_globals(int params, char *args[], t_globals	*g_args)
 	return (true);
 }
 
-void	end_cycle(t_globals *g_args)
+void	end_cycle(t_globals *g_args, t_philo *philo, pthread_mutex_t *forks)
 {
 	g_args->simulate = false;
 	g_args->time_to_die = 0;
 	g_args->time_to_eat = 0;
 	g_args->time_to_sleep = 0;
+	pthread_mutex_unlock(&(forks[philo->fork_one]));
+	pthread_mutex_unlock(&(forks[philo->fork_two]));
 }
