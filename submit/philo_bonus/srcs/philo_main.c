@@ -72,10 +72,12 @@ void	philo_cycle(void)
 {
 	g_args.simulate = true;
 	g_philo.last_eat_time = givetime();
+	if (g_args.simulate)
+		printf("%lu %i is thinking\n", givetime(), g_philo.philo_num);
+	if (g_philo.philo_num % 2 == 0)
+		ft_usleep(2500);
 	while (g_args.simulate)
 	{
-		if (g_args.simulate)
-			printf("%lu %i is thinking\n", givetime(), g_philo.philo_num);
 		sem_wait(g_sems.forks);
 		if (g_args.simulate)
 			printf("%lu %i has taken a fork\n", givetime(), g_philo.philo_num);
@@ -83,11 +85,13 @@ void	philo_cycle(void)
 		if (g_args.simulate)
 			printf("%lu %i has taken a fork\n", givetime(), g_philo.philo_num);
 		eat();
-		sem_post(g_sems.forks);
-		sem_post(g_sems.forks);
 		if (g_args.simulate)
 			printf("%lu %i is sleeping\n", givetime(), g_philo.philo_num);
+		sem_post(g_sems.forks);
+		sem_post(g_sems.forks);
 		ft_usleep(g_args.time_to_sleep * 1000);
+		if (g_args.simulate)
+			printf("%lu %i is thinking\n", givetime(), g_philo.philo_num);
 	}
 }
 
