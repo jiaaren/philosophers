@@ -18,10 +18,10 @@ static pthread_mutex_t	g_seq;
 
 void	print_status(char *str, int p_num)
 {
-	//pthread_mutex_lock(&(g_seq[p_num - 1]));
+	pthread_mutex_lock(&g_seq);
 	if (g_args.simulate)
 		printf("%lu %i %s", givetime(), p_num, str);
-	//pthread_mutex_unlock(&(g_seq[p_num - 1]));
+	pthread_mutex_unlock(&g_seq);
 }
 
 void	putforks(t_philo *philo)
@@ -48,11 +48,11 @@ void	*death_cycle(void *arg)
 		if (curr_time >= (philo->last_eat_time + g_args.time_to_die)
 			|| g_args.philo_amount == 1)
 		{
-			//pthread_mutex_lock(&(g_seq[philo->philo_num - 1]));
+			pthread_mutex_lock(&g_seq);
 			if (g_args.simulate)
 				printf("%lu %i died\n", givetime(), philo->philo_num);
 			end_cycle(&g_args);
-			//pthread_mutex_unlock(&(g_seq[philo->philo_num - 1]));
+			pthread_mutex_unlock(&g_seq);
 			putforks(philo);
 			break ;
 		}
@@ -67,12 +67,14 @@ void	eat(t_philo *philo)
 	(philo->times_eaten)++;
 	if (philo->times_eaten >= g_args.times_philo_eat)
 		g_args.tummies_filled++;
+	pthread_mutex_lock(&g_seq);
 	if (g_args.tummies_filled >= g_args.philo_amount)
 	{
 		end_cycle(&g_args);
 		g_args.ate_enough = true;
 		putforks(philo);
 	}
+	pthread_mutex_unlock(&g_seq);
 	ft_usleep(g_args.time_to_eat * 1000);
 }
 
