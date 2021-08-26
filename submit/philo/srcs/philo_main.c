@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 17:46:14 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/25 17:54:12 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/26 12:04:29 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,6 @@ void	print_status(char *str, int p_num)
 	if (g_args.simulate)
 		printf("%lu %i %s", givetime(), p_num, str);
 	pthread_mutex_unlock(&g_seq);
-}
-
-void	putforks(t_philo *philo)
-{
-	pthread_mutex_unlock(&(g_forks[philo->fork_one]));
-	pthread_mutex_unlock(&(g_forks[philo->fork_two]));
 }
 
 void	*death_cycle(void *arg)
@@ -51,9 +45,8 @@ void	*death_cycle(void *arg)
 			pthread_mutex_lock(&g_seq);
 			if (g_args.simulate)
 				printf("%lu %i died\n", givetime(), philo->philo_num);
-			end_cycle(&g_args);
+			end_cycle(&g_args, philo, g_forks);
 			pthread_mutex_unlock(&g_seq);
-			putforks(philo);
 			break ;
 		}
 	}
@@ -70,9 +63,8 @@ void	eat(t_philo *philo)
 	pthread_mutex_lock(&g_seq);
 	if (g_args.tummies_filled >= g_args.philo_amount)
 	{
-		end_cycle(&g_args);
 		g_args.ate_enough = true;
-		putforks(philo);
+		end_cycle(&g_args, philo, g_forks);
 	}
 	pthread_mutex_unlock(&g_seq);
 	ft_usleep(g_args.time_to_eat * 1000);
@@ -96,7 +88,8 @@ void	*philo_cycle(void *arg)
 		pthread_mutex_lock(&(g_forks[philo->fork_two]));
 		print_status("has taken a fork\n", philo->philo_num);
 		eat(philo);
-		putforks(philo);
+		pthread_mutex_unlock(&(g_forks[philo->fork_one]));
+		pthread_mutex_unlock(&(g_forks[philo->fork_two]));
 		print_status("is sleeping\n", philo->philo_num);
 		ft_usleep(g_args.time_to_sleep * 1000);
 		print_status("is thinking\n", philo->philo_num);

@@ -6,7 +6,7 @@
 /*   By: jkhong <jkhong@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/19 19:57:57 by jkhong            #+#    #+#             */
-/*   Updated: 2021/08/25 17:42:18 by jkhong           ###   ########.fr       */
+/*   Updated: 2021/08/26 11:49:11 by jkhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ void	initialise_philo(int p_num, t_philo **philo)
 	*philo = tmp;
 }
 
-void	initialise_mutex(int p_num, pthread_mutex_t **forks, pthread_mutex_t *seq)
+void	initialise_mutex(int p_num, pthread_mutex_t **forks,
+			pthread_mutex_t *seq)
 {
 	pthread_mutex_t	*tmp_forks;
 	int				i;
