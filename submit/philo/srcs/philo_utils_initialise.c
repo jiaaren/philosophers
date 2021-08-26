@@ -31,7 +31,7 @@ void	initialise_philo(int p_num, t_philo **philo)
 	*philo = tmp;
 }
 
-void	initialise_mutex(int p_num, pthread_mutex_t **forks, pthread_mutex_t **seq)
+void	initialise_mutex(int p_num, pthread_mutex_t **forks, pthread_mutex_t *seq)
 {
 	pthread_mutex_t	*tmp_forks;
 	int				i;
@@ -41,11 +41,7 @@ void	initialise_mutex(int p_num, pthread_mutex_t **forks, pthread_mutex_t **seq)
 	while (i < p_num)
 		pthread_mutex_init(&(tmp_forks[i++]), NULL);
 	*forks = tmp_forks;
-	i = 0;
-	tmp_forks = malloc(sizeof(pthread_mutex_t) * p_num);
-	while (i < p_num)
-		pthread_mutex_init(&(tmp_forks[i++]), NULL);
-	*seq = tmp_forks;
+	pthread_mutex_init(&(*seq), NULL);
 }
 
 void	create_thread(int p_num, pthread_t **thread,
@@ -86,11 +82,8 @@ void	free_mutex_fork_philo(int p_num, pthread_mutex_t *forks,
 
 	i = 0;
 	while (i < p_num)
-	{
 		pthread_mutex_destroy(&(forks[i++]));
-		pthread_mutex_destroy(&(seq[i++]));
-	}
+	pthread_mutex_destroy(&(*seq));
 	free(forks);
-	free(seq);
 	free(philo);
 }

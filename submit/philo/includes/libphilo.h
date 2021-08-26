@@ -41,7 +41,7 @@ typedef struct s_philo {
 }				t_philo;
 
 void	initialise_philo(int p_num, t_philo **philo);
-void	initialise_mutex(int p_num, pthread_mutex_t **forks, pthread_mutex_t **seq);
+void	initialise_mutex(int p_num, pthread_mutex_t **forks, pthread_mutex_t *seq);
 void	create_thread(int p_num, pthread_t **thread,
 			t_philo *philo, void *(f)(void *));
 void	join_and_free_th(int p_num, pthread_t *th_cycle,
